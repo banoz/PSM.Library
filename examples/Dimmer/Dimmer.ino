@@ -2,7 +2,7 @@
 
 const byte valuePin = A3; // potentiometer input
 
-const byte controlPin = 13; // triac output
+const byte controlPin = 13;  // triac output
 const byte interruptPin = 3; // phase sensing
 
 const unsigned int range = 127;
