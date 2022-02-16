@@ -89,3 +89,28 @@ void PSM::updateControl()
 		digitalWrite(PSM::_controlPin, HIGH);
 	}
 }
+
+unsigned int PSM::cps()
+{
+    unsigned int range = PSM::_range;
+    unsigned int value = PSM::_value;
+    
+    PSM::_range = 0xFFFF;
+    PSM::_value = 1;
+    PSM::_a = 0;
+    
+    unsigned long stopAt = millis() + 1000;  
+    
+    while (millis() < stopAt)
+    {
+        delay(0);
+    }
+    
+    unsigned int result = PSM::_a;
+    
+    PSM::_range = range;
+    PSM::_value = value;
+    PSM::_a = 0;
+    
+    return result;
+}
