@@ -3,7 +3,7 @@
 
 PSM *_thePSM;
 
-PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range)
+PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode)
 {
 	_thePSM = this;
 
@@ -13,7 +13,7 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range)
 	pinMode(controlPin, OUTPUT);
 	PSM::_controlPin = controlPin;
 
-	attachInterrupt(digitalPinToInterrupt(PSM::_sensePin), onInterrupt, RISING); // low-to-high transition = start of negative half-wave
+	attachInterrupt(digitalPinToInterrupt(PSM::_sensePin), onInterrupt, mode);
 
 	PSM::_range = range;
 }

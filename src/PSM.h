@@ -6,7 +6,7 @@
 class PSM
 {
 public:
-	PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range);
+	PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode = RISING);
 
 	void set(unsigned int value);
 
