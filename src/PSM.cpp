@@ -25,7 +25,14 @@ void PSM::onInterrupt()
 
 void PSM::set(unsigned int value)
 {
-	PSM::_value = value;
+	if (value < PSM::_range)
+	{
+		PSM::_value = value;
+	}
+	else
+	{
+		PSM::_value = PSM::_range;
+	}
 }
 
 long PSM::getCounter()
