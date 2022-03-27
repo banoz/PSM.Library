@@ -16,6 +16,7 @@ public:
 	void stopAfter(long counter);
     
     unsigned int cps();
+	long getLastMillis();
 
 private:
 	static inline void onInterrupt();
@@ -30,6 +31,7 @@ private:
 	volatile bool _skip;
 	volatile long _counter;
 	volatile long _stopAfter;
+	volatile long _lastMillis;
 };
 
 extern PSM *_thePSM;

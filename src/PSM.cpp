@@ -52,6 +52,8 @@ void PSM::stopAfter(long counter)
 
 void PSM::calculateSkip()
 {
+	PSM::_lastMillis = millis();
+
 	PSM::_a += PSM::_value;
 
 	if (PSM::_a >= PSM::_range)
@@ -120,4 +122,9 @@ unsigned int PSM::cps()
     PSM::_a = 0;
     
     return result;
+}
+
+long PSM::getLastMillis()
+{
+	return PSM::_lastMillis;
 }
