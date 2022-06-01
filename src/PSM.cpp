@@ -58,7 +58,7 @@ void PSM::calculateSkip()
 
 	if (PSM::_a >= PSM::_range)
 	{
-		PSM::_a -= PSM::_range;
+		PSM::_a -= PSM::_range + 1;
 		PSM::_skip = false;
 	}
 	else
