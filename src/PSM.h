@@ -16,7 +16,7 @@ public:
 	void stopAfter(long counter);
     
     unsigned int cps();
-	long getLastMillis();
+	unsigned long getLastMillis();
 
 private:
 	static inline void onInterrupt();
