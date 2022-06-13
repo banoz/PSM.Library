@@ -124,7 +124,7 @@ unsigned int PSM::cps()
     return result;
 }
 
-long PSM::getLastMillis()
+unsigned long PSM::getLastMillis()
 {
 	return PSM::_lastMillis;
 }

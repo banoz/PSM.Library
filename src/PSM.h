@@ -31,7 +31,7 @@ private:
 	volatile bool _skip;
 	volatile long _counter;
 	volatile long _stopAfter;
-	volatile long _lastMillis;
+	volatile unsigned long _lastMillis;
 };
 
 extern PSM *_thePSM;
