@@ -3,7 +3,7 @@
 
 PSM *_thePSM;
 
-PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode)
+PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode, unsigned char divider)
 {
 	_thePSM = this;
 
@@ -12,15 +12,33 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 
 	pinMode(controlPin, OUTPUT);
 	PSM::_controlPin = controlPin;
+	
+	PSM::_divider = divider > 0 ? divider : 1;
 
-	attachInterrupt(digitalPinToInterrupt(PSM::_sensePin), onInterrupt, mode);
+	uint8_t interruptNum = digitalPinToInterrupt(PSM::_sensePin);
+
+	if (interruptNum != NOT_AN_INTERRUPT)
+	{
+		attachInterrupt(interruptNum, onInterrupt, mode);
+	}
 
 	PSM::_range = range;
 }
 
 void PSM::onInterrupt()
 {
-	_thePSM->calculateSkip();
+	onPSMInterrupt();
+
+	if (_thePSM->_dividerCounter >= _thePSM->_divider)
+	{
+		_thePSM->_dividerCounter = 1;
+	
+		_thePSM->calculateSkip();
+	}
+	else
+	{
+		_thePSM->_dividerCounter++;
+	}
 }
 
 void PSM::set(unsigned int value)
