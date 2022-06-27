@@ -27,8 +27,11 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 
 void PSM::onInterrupt()
 {
-	onPSMInterrupt();
-
+	if (onPSMInterrupt)
+	{
+		onPSMInterrupt();
+	}
+	
 	if (_thePSM->_dividerCounter >= _thePSM->_divider)
 	{
 		_thePSM->_dividerCounter = 1;
