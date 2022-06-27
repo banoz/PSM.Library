@@ -38,6 +38,4 @@ private:
 
 extern PSM *_thePSM;
 
-extern void onPSMInterrupt() __attribute__ ((weak));
-
 #endif

@@ -25,13 +25,13 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 	PSM::_range = range;
 }
 
+void onPSMInterrupt() __attribute__ ((weak));
+void onPSMInterrupt() {}
+
 void PSM::onInterrupt()
 {
-	if (onPSMInterrupt)
-	{
-		onPSMInterrupt();
-	}
-	
+	onPSMInterrupt();
+
 	if (_thePSM->_dividerCounter >= _thePSM->_divider)
 	{
 		_thePSM->_dividerCounter = 1;
