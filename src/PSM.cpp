@@ -30,6 +30,13 @@ void onPSMInterrupt() {}
 
 void PSM::onInterrupt()
 {
+	static long last;
+	long now = millis();
+	if (now - last < 4) {
+		return;
+	}
+	last = now;
+
 	onPSMInterrupt();
 
 	if (_thePSM->_dividerCounter >= _thePSM->_divider)
