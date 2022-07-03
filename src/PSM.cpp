@@ -30,12 +30,10 @@ void onPSMInterrupt() {}
 
 void PSM::onInterrupt()
 {
-	static long last;
-	long now = millis();
-	if (now - last < 4) {
+	if (millis() - _thePSM->_lastMillis < 4) {
 		return;
 	}
-	last = now;
+	_thePSM->_lastMillis = millis();
 
 	onPSMInterrupt();
 
