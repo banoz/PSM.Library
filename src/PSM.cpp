@@ -32,7 +32,7 @@ void onPSMInterrupt() {}
 
 void PSM::onInterrupt()
 {
-	if (millis() - _thePSM->_lastMillis < _thePSM->_interruptMinTimeDiff) {
+	if (_thePSM->_interruptMinTimeDiff > 0 && millis() - _thePSM->_lastMillis < _thePSM->_interruptMinTimeDiff) {
 		return;
 	}
 	_thePSM->_lastMillis = millis();
