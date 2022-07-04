@@ -3,7 +3,7 @@
 
 PSM *_thePSM;
 
-PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode, unsigned char divider)
+PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode, unsigned char divider, unsigned char interruptMinTimeDiff)
 {
 	_thePSM = this;
 
@@ -23,6 +23,8 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 	}
 
 	PSM::_range = range;
+
+	PSM::_interruptMinTimeDiff = interruptMinTimeDiff;
 }
 
 void onPSMInterrupt() __attribute__ ((weak));
@@ -30,6 +32,11 @@ void onPSMInterrupt() {}
 
 void PSM::onInterrupt()
 {
+	if (_thePSM->_interruptMinTimeDiff > 0 && millis() - _thePSM->_lastMillis < _thePSM->_interruptMinTimeDiff) {
+		return;
+	}
+	_thePSM->_lastMillis = millis();
+
 	onPSMInterrupt();
 
 	if (_thePSM->_dividerCounter >= _thePSM->_divider)
@@ -73,8 +80,6 @@ void PSM::stopAfter(long counter)
 
 void PSM::calculateSkip()
 {
-	PSM::_lastMillis = millis();
-
 	PSM::_a += PSM::_value;
 
 	if (PSM::_a >= PSM::_range)

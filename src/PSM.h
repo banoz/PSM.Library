@@ -6,7 +6,7 @@
 class PSM
 {
 public:
-	PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode = RISING, unsigned char divider = 1);
+	PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode = RISING, unsigned char divider = 1, unsigned char interruptMinTimeDiff = 0);
 
 	void set(unsigned int value);
 
@@ -28,6 +28,7 @@ private:
 	unsigned int _range;
 	unsigned char _divider;
 	unsigned char _dividerCounter = 1;
+	unsigned char _interruptMinTimeDiff;
 	volatile unsigned int _value;
 	volatile unsigned int _a;
 	volatile bool _skip;
