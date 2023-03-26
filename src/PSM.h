@@ -2,7 +2,7 @@
 #define PSM_h
 
 #include "Arduino.h"
- 
+
 class PSM
 {
 public:
@@ -14,15 +14,15 @@ public:
 	void resetCounter();
 
 	void stopAfter(long counter);
-    
+
     unsigned int cps();
-	unsigned long getLastMillis();
+	unsigned long getLastMicros();
 
 private:
 	static inline void onInterrupt();
 	void calculateSkip();
 	void updateControl();
-	
+
 	unsigned char _sensePin;
 	unsigned char _controlPin;
 	unsigned int _range;
@@ -34,7 +34,7 @@ private:
 	volatile bool _skip;
 	volatile long _counter;
 	volatile long _stopAfter;
-	volatile unsigned long _lastMillis;
+	volatile unsigned long _lastMicros;
 };
 
 extern PSM *_thePSM;

@@ -12,7 +12,7 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 
 	pinMode(controlPin, OUTPUT);
 	PSM::_controlPin = controlPin;
-	
+
 	PSM::_divider = divider > 0 ? divider : 1;
 
 	uint8_t interruptNum = digitalPinToInterrupt(PSM::_sensePin);
@@ -32,17 +32,17 @@ void onPSMInterrupt() {}
 
 void PSM::onInterrupt()
 {
-	if (_thePSM->_interruptMinTimeDiff > 0 && millis() - _thePSM->_lastMillis < _thePSM->_interruptMinTimeDiff) {
+	if (_thePSM->_interruptMinTimeDiff > 0 && micros() - _thePSM->_lastMicros < _thePSM->_interruptMinTimeDiff) {
 		return;
 	}
-	_thePSM->_lastMillis = millis();
+	_thePSM->_lastMicros = micros();
 
 	onPSMInterrupt();
 
 	if (_thePSM->_dividerCounter >= _thePSM->_divider)
 	{
 		_thePSM->_dividerCounter = 1;
-	
+
 		_thePSM->calculateSkip();
 	}
 	else
@@ -103,7 +103,7 @@ void PSM::calculateSkip()
 		PSM::_counter++;
 	}
 
-	if (!PSM::_skip 
+	if (!PSM::_skip
 		&& PSM::_stopAfter > 0
 		&& PSM::_counter > PSM::_stopAfter)
 	{
@@ -129,28 +129,28 @@ unsigned int PSM::cps()
 {
     unsigned int range = PSM::_range;
     unsigned int value = PSM::_value;
-    
+
     PSM::_range = 0xFFFF;
     PSM::_value = 1;
     PSM::_a = 0;
-    
-    unsigned long stopAt = millis() + 1000;  
-    
-    while (millis() < stopAt)
+
+    unsigned long stopAt = micros() + 1000000;
+
+    while (micros() < stopAt)
     {
-        delay(0);
+        delayMicroseconds(0);
     }
-    
+
     unsigned int result = PSM::_a;
-    
+
     PSM::_range = range;
     PSM::_value = value;
     PSM::_a = 0;
-    
+
     return result;
 }
 
-unsigned long PSM::getLastMillis()
+unsigned long PSM::getLastMicros()
 {
-	return PSM::_lastMillis;
+	return PSM::_lastMicros;
 }
