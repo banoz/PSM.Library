@@ -35,10 +35,9 @@ void PSM::onInterrupt() {
   onPSMInterrupt();
 
   if (_thePSM->_dividerCounter >= _thePSM->_divider) {
-    _thePSM->_dividerCounter = 1;
+    _thePSM->_dividerCounter -= _thePSM->_divider;
     _thePSM->calculateSkip();
-  }
-  else {
+  } else {
     _thePSM->_dividerCounter++;
   }
 }
@@ -46,8 +45,7 @@ void PSM::onInterrupt() {
 void PSM::set(unsigned int value) {
   if (value < PSM::_range) {
     PSM::_value = value;
-  }
-  else {
+  } else {
     PSM::_value = PSM::_range;
   }
 }
@@ -72,8 +70,7 @@ void PSM::calculateSkip() {
   if (PSM::_a >= PSM::_range) {
     PSM::_a -= PSM::_range;
     PSM::_skip = false;
-  }
-  else {
+  } else {
     PSM::_skip = true;
   }
 
@@ -98,8 +95,7 @@ void PSM::calculateSkip() {
 void PSM::updateControl() {
   if (PSM::_skip) {
     digitalWrite(PSM::_controlPin, LOW);
-  }
-  else {
+  } else {
     digitalWrite(PSM::_controlPin, HIGH);
   }
 }
