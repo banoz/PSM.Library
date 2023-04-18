@@ -13,6 +13,8 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 
   PSM::_divider = divider > 0 ? divider : 1;
 
+  PSM::_intervalTimerInitialized = false;
+
   uint8_t interruptNum = digitalPinToInterrupt(PSM::_sensePin);
 
   if (interruptNum != NOT_AN_INTERRUPT) {
@@ -26,7 +28,7 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 void onPSMInterrupt() __attribute__((weak));
 void onPSMInterrupt() {}
 
-void PSM::onInterrupt() {
+void PSM::onInterrupt(void) {
   if (_thePSM->_interruptMinTimeDiff > 0 && millis() - _thePSM->_lastMillis < _thePSM->_interruptMinTimeDiff) {
     return;
   }
@@ -34,27 +36,23 @@ void PSM::onInterrupt() {
 
   onPSMInterrupt();
 
-  if (_thePSM->_dividerCounter >= _thePSM->_divider) {
-    _thePSM->_dividerCounter -= _thePSM->_divider;
-    _thePSM->calculateSkip();
-  } else {
-    _thePSM->_dividerCounter++;
-  }
+  _thePSM->calculateSkipFromZC();
 }
 
 void PSM::set(unsigned int value) {
   if (value < PSM::_range) {
     PSM::_value = value;
-  } else {
+  }
+  else {
     PSM::_value = PSM::_range;
   }
 }
 
-long PSM::getCounter() {
+long PSM::getCounter(void) {
   return PSM::_counter;
 }
 
-void PSM::resetCounter() {
+void PSM::resetCounter(void) {
   PSM::_counter = 0;
 }
 
@@ -62,7 +60,25 @@ void PSM::stopAfter(long counter) {
   PSM::_stopAfter = counter;
 }
 
-void PSM::calculateSkip() {
+void PSM::calculateSkipFromZC(void) {
+  if (_thePSM->_intervalTimerInitialized) {
+    return;
+  }
+
+  if (_thePSM->_dividerCounter >= _thePSM->_divider) {
+    _thePSM->_dividerCounter -= _thePSM->_divider;
+    _thePSM->calculateSkip();
+  }
+  else {
+    _thePSM->_dividerCounter++;
+  }
+}
+
+void PSM::calculateSkipFromTimer(void) {
+  _thePSM->calculateSkip();
+}
+
+void PSM::calculateSkip(void) {
   PSM::_lastMillis = millis();
 
   PSM::_a += PSM::_value;
@@ -70,7 +86,8 @@ void PSM::calculateSkip() {
   if (PSM::_a >= PSM::_range) {
     PSM::_a -= PSM::_range;
     PSM::_skip = false;
-  } else {
+  }
+  else {
     PSM::_skip = true;
   }
 
@@ -92,15 +109,16 @@ void PSM::calculateSkip() {
   updateControl();
 }
 
-void PSM::updateControl() {
+void PSM::updateControl(void) {
   if (PSM::_skip) {
     digitalWrite(PSM::_controlPin, LOW);
-  } else {
+  }
+  else {
     digitalWrite(PSM::_controlPin, HIGH);
   }
 }
 
-unsigned int PSM::cps() {
+unsigned int PSM::cps(void) {
   unsigned int range = PSM::_range;
   unsigned int value = PSM::_value;
   unsigned char divider = PSM::_divider;
@@ -126,7 +144,7 @@ unsigned int PSM::cps() {
   return result;
 }
 
-unsigned long PSM::getLastMillis() {
+unsigned long PSM::getLastMillis(void) {
   return PSM::_lastMillis;
 }
 
@@ -140,4 +158,13 @@ void PSM::setDivider(unsigned char divider) {
 
 void PSM::shiftDividerCounter(char value) {
   PSM::_dividerCounter += value;
+}
+
+void PSM::initTimer(uint32_t freq) {
+  PSM::_psmIntervalTimer = new HardwareTimer(TIM9);
+  PSM::_psmIntervalTimer->setOverflow(freq, HERTZ_FORMAT);
+  PSM::_psmIntervalTimer->attachInterrupt(calculateSkipFromTimer);
+  PSM::_psmIntervalTimer->resume();
+
+  PSM::_intervalTimerInitialized = true;
 }
