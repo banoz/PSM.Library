@@ -8,7 +8,7 @@ class PSM
 public:
   PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode = RISING, unsigned char divider = 1, unsigned char interruptMinTimeDiff = 0);
 
-  void initTimer(uint32_t freq);
+  void initTimer(uint8_t freq);
 
   void set(unsigned int value);
 
@@ -25,26 +25,26 @@ public:
   void shiftDividerCounter(char value = 1);
 
 private:
-  static inline void onInterrupt(void);
+  static inline void onZCInterrupt(void);
   static inline void calculateSkipFromZC(void);
-  static inline void calculateSkipFromTimer(void);
+  static inline void onPSMTimerInterrupt(void);
   void calculateSkip(void);
-  void updateControl(void);
+  void updateControl(bool forceDisable = true);
 
   unsigned char _sensePin;
   unsigned char _controlPin;
   unsigned int _range;
-  unsigned char _divider;
+  unsigned char _divider = 1;
   unsigned char _dividerCounter = 1;
   unsigned char _interruptMinTimeDiff;
   volatile unsigned int _value;
   volatile unsigned int _a;
-  volatile bool _skip;
+  volatile bool _skip = true;
   volatile long _counter;
   volatile long _stopAfter;
-  volatile unsigned long _lastMillis;
+  volatile unsigned long _lastMillis = 0;
 
-  bool _intervalTimerInitialized;
+  bool _psmIntervalTimerInitialized = false;
   HardwareTimer* _psmIntervalTimer;
 };
 
