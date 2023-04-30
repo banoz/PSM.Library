@@ -155,7 +155,7 @@ void PSM::shiftDividerCounter(char value) {
 }
 
 void PSM::initTimer(uint8_t freq) {
-  uint32_t us = 7000u;
+  uint32_t us = 5000u;
   if (freq > 55u) {
     us = 6000u;
   }
