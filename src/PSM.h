@@ -8,7 +8,7 @@ class PSM
 public:
   PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode = RISING, unsigned char divider = 1, unsigned char interruptMinTimeDiff = 0);
 
-  void initTimer(uint8_t freq);
+  void initTimer(uint8_t freq, TIM_TypeDef* timerInstance = TIM9);
 
   void set(unsigned int value);
 

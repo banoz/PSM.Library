@@ -23,12 +23,19 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
   PSM::_interruptMinTimeDiff = interruptMinTimeDiff;
 }
 
+void onPSMInterrupt() __attribute__((weak));
+void onPSMInterrupt() {}
+
 void PSM::onZCInterrupt(void) {
-  if (_thePSM->_interruptMinTimeDiff > 0 && millis() < _thePSM->_lastMillis + _thePSM->_interruptMinTimeDiff) {
-    return;
+  if (_thePSM->_interruptMinTimeDiff > 0 && millis() - _thePSM->_interruptMinTimeDiff < _thePSM->_lastMillis) {
+    if (millis() >= _thePSM->_lastMillis) {
+      return;
+    }
   }
 
   _thePSM->_lastMillis = millis();
+
+  onPSMInterrupt();
 
   _thePSM->calculateSkipFromZC();
 
@@ -154,13 +161,13 @@ void PSM::shiftDividerCounter(char value) {
   PSM::_dividerCounter += value;
 }
 
-void PSM::initTimer(uint8_t freq) {
+void PSM::initTimer(uint8_t freq, TIM_TypeDef* timerInstance) {
   uint32_t us = 5000u;
   if (freq > 55u) {
     us = 6000u;
   }
 
-  PSM::_psmIntervalTimer = new HardwareTimer(TIM9);
+  PSM::_psmIntervalTimer = new HardwareTimer(timerInstance);
   PSM::_psmIntervalTimer->setOverflow(us, MICROSEC_FORMAT);
   PSM::_psmIntervalTimer->attachInterrupt(onPSMTimerInterrupt);
 
