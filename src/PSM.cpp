@@ -162,13 +162,14 @@ void PSM::shiftDividerCounter(char value) {
 }
 
 void PSM::initTimer(uint8_t freq, TIM_TypeDef* timerInstance) {
-  uint32_t us = 5000u;
+  uint32_t us = 6000u;
   if (freq > 55u) {
-    us = 6000u;
+    us = 7500u;
   }
 
   PSM::_psmIntervalTimer = new HardwareTimer(timerInstance);
   PSM::_psmIntervalTimer->setOverflow(us, MICROSEC_FORMAT);
+  PSM::_psmIntervalTimer->setInterruptPriority(0, 0);
   PSM::_psmIntervalTimer->attachInterrupt(onPSMTimerInterrupt);
 
   PSM::_psmIntervalTimerInitialized = true;
