@@ -34,8 +34,8 @@ void PSM::onInterrupt() {
 
   onPSMInterrupt();
 
-  if (_thePSM->_dividerCounter >= _thePSM->_divider) {
-    _thePSM->_dividerCounter -= _thePSM->_divider;
+  if (_thePSM->_dividerCounter >= _thePSM->_divider - 1) {
+    _thePSM->_dividerCounter -= _thePSM->_divider - 1;
     _thePSM->calculateSkip();
   } else {
     _thePSM->_dividerCounter++;
