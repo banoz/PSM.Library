@@ -72,8 +72,8 @@ void PSM::stopAfter(long counter) {
 }
 
 void PSM::calculateSkipFromZC(void) {
-  if (_thePSM->_dividerCounter >= _thePSM->_divider) {
-    _thePSM->_dividerCounter -= _thePSM->_divider;
+  if (_thePSM->_dividerCounter >= _thePSM->_divider - 1) {
+    _thePSM->_dividerCounter -= _thePSM->_divider - 1;
     _thePSM->calculateSkip();
   }
   else {
