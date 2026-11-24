@@ -33,12 +33,12 @@ private:
   unsigned char _divider;
   unsigned char _dividerCounter = 1;
   unsigned char _interruptMinTimeDiff;
-  volatile unsigned int _value;
-  volatile unsigned int _a;
-  volatile bool _skip;
-  volatile long _counter;
-  volatile long _stopAfter;
-  volatile unsigned long _lastMillis;
+  volatile unsigned int _value = 0;
+  volatile unsigned int _a = 0;
+  volatile bool _skip = true;
+  volatile long _counter = 0;
+  volatile long _stopAfter = 0;
+  volatile unsigned long _lastMillis = 0;
 };
 
 extern PSM* _thePSM;

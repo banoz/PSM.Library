@@ -13,14 +13,15 @@ PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, i
 
   PSM::_divider = divider > 0 ? divider : 1;
 
+  PSM::_range = range;
+  PSM::_interruptMinTimeDiff = interruptMinTimeDiff;
+
+  // Attach last, so the ISR never sees an uninitialised _range or _interruptMinTimeDiff.
   uint8_t interruptNum = digitalPinToInterrupt(PSM::_sensePin);
 
   if (interruptNum != NOT_AN_INTERRUPT) {
     attachInterrupt(interruptNum, onInterrupt, mode);
   }
-
-  PSM::_range = range;
-  PSM::_interruptMinTimeDiff = interruptMinTimeDiff;
 }
 
 void onPSMInterrupt() __attribute__((weak));
